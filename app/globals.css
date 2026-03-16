@@ -5,6 +5,12 @@
   --foreground: #171717;
 }
 
+@theme {
+  --color-dark-brown: #897249;
+  --color-light-brown: #b0a77d;
+  --color-light-green: #dce2bd;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
