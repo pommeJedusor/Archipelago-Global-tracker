@@ -6,11 +6,11 @@ export type RoomInfo = {
   generator_version: Version,
   tags: Array<string>,
   password: Boolean,
-  permissions: {[id: string]: string},
-  hint_cost: Number,
-  location_check_points: Number,
+  permissions: {[id: string]: number},
+  hint_cost: number,
+  location_check_points: number,
   games: Array<string>,
-  datapackage_checksums: {[id: string]: Number},
+  datapackage_checksums: {[id: string]: number},
   seed_name: string,
-  time: Number
+  time: number
 };

@@ -7,7 +7,7 @@ export type ConnectPKG = {
   name: string,
   uuid: string,
   version: Version,
-  items_handling: Number,
+  items_handling: number,
   tags: Array<string>,
   slot_data: Boolean,
 };
