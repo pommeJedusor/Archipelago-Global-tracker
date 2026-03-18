@@ -1,8 +1,9 @@
 export type Player = {
   "checks"?: Array<number>,
-  "game"?: string,
-  "game_state": string,
+  "game": string,
+  "game_state"?: string,
   "last_activity"?: number,
+  "location_number": number,
   "name": string,
   "slot": number,
   "team": number,

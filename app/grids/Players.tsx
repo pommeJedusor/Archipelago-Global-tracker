@@ -20,28 +20,38 @@ function GridHeadersRow() {
 function PlayerRow({player}: {player: Player}) {
   const minutes_elapsed = player.last_activity == undefined ? 0 : Math.floor((Date.now() / 1000 - player.last_activity) / 60);
   const last_activity = player.last_activity == undefined ? "N/A" : `${Math.floor(minutes_elapsed / 60)}:${minutes_elapsed % 60}`;
+  const percentage_check = ((player.checks?.length || 0) / player.location_number * 100).toFixed(2)
+
   return (
     <>
       <div className="bg-light-green h-[24px] font-bold px-2 col-span-5"><a className="text-red-700 hover:underline" href="">{player.slot}</a></div>
       <div className="bg-light-green h-[24px] px-2 col-span-20">{player.name}</div>
       <div className="bg-light-green h-[24px] px-2 col-span-25">{player.game || "unknown"}</div>
       <div className="bg-light-green h-[24px] px-2 col-span-18">{player.game_state}</div>
-      <div className="bg-light-green h-[24px] text-center col-span-12">{player.checks?.length || 0}/?</div>
-      <div className="bg-light-green h-[24px] text-center col-span-8">{"N/A"}</div>
+      <div className="bg-light-green h-[24px] text-center col-span-12">{player.checks?.length || 0}/{player.location_number}</div>
+      <div className="bg-light-green h-[24px] text-center col-span-8">{percentage_check}</div>
       <div className="bg-light-green h-[24px] text-center col-span-12">{last_activity}</div>
     </>
   )
 }
 
-function TotalRow(){
+function TotalRow({client}: {client: ArchipelagoApiClient}){
+  const number_of_players = client.players?.length
+  const number_of_goal_completed = client.players?.filter((player)=>{player.game_state == "Goal Completed"}).length
+  const number_of_checks = client.players?.map((player)=>player.checks?.length || 0).reduce((x, y)=>x + y, 0)
+  const number_of_locations = client.players?.map((player)=>player.location_number).reduce((x, y)=>x + y, 0)
+  const percentage_check = client.players == undefined ? "N/A" : (number_of_checks as number / (number_of_locations as number) * 100).toFixed(2)
+  const minutes_elapseds = client.players?.filter((player)=>player.last_activity != undefined).map((player)=>Math.floor((Date.now() / 1000 - (player.last_activity as number)) / 60))
+  const last_activity = minutes_elapseds == undefined ? "N/A" : `${Math.floor(Math.min(...minutes_elapseds) / 60)}:${Math.min(...minutes_elapseds) % 60}`;
+
   return (
     <>
       <p className="bg-light-green h-[24px] px-2 col-span-25 text-right">Total</p>
       <p className="bg-light-green h-[24px] px-2 col-span-25">All Games</p>
-      <p className="bg-light-green h-[24px] px-2 col-span-18">8/11 Complete</p>
-      <p className="bg-light-green h-[24px] text-center col-span-12">3571/3571</p>
-      <p className="bg-light-green h-[24px] text-center col-span-8">100.00</p>
-      <p className="bg-light-green h-[24px] text-center col-span-12">10478:32</p>
+      <p className="bg-light-green h-[24px] px-2 col-span-18">{client.players == undefined ? "N/A" : `${number_of_goal_completed}/${number_of_players} Complete`}</p>
+      <p className="bg-light-green h-[24px] text-center col-span-12">{number_of_checks}/{number_of_locations}</p>
+      <p className="bg-light-green h-[24px] text-center col-span-8">{percentage_check}</p>
+      <p className="bg-light-green h-[24px] text-center col-span-12">{last_activity}</p>
     </>
   )
 }
@@ -61,7 +71,7 @@ export default function Players({client}: {client: ArchipelagoApiClient}) {
     <div style={div_style} className={"bg-light-brown h-min resize-y overflow-scroll grid grid-cols-100 gap-[2px]"}>
       <GridHeadersRow />
       {players}
-      <TotalRow />
+      <TotalRow client={client} />
     </div>
   )
 }
