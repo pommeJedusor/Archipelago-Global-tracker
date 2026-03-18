@@ -1,17 +1,21 @@
 "use client"
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Players from "./grids/Players";
-import { init } from "@/ArchipelagoClient/init";
+import { init } from "@/ArchipelagoApiClient/init";
+import { ArchipelagoApiClient } from "@/ArchipelagoApiClient/ArchipelagoApiClient";
 
 export default function Home() {
+  const [client, setClient] = useState([new ArchipelagoApiClient()]);
+  client[0].setClient = setClient;
+
   useEffect(() => {
-    init();
+    init(client[0]);
   }, [])
 
   return (
     <div className="bg-dark-brown h-screen">
-      <Players />
+      <Players client={client[0]}/>
     </div>
   );
 }

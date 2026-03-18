@@ -1,7 +1,9 @@
+import { ArchipelagoApiClient, Player } from "@/ArchipelagoApiClient/ArchipelagoApiClient";
+
 const ROW_SIZE = 24; // px
 const GAP_SIZE = 2; // px
 
-function GridHeaders() {
+function GridHeadersRow() {
   return (
     <>
       <div className="bg-light-brown h-[48px] font-bold flex flex-col justify-center px-2 col-span-5"><p>#</p></div>
@@ -15,21 +17,23 @@ function GridHeaders() {
   )
 }
 
-function Player() {
+function PlayerRow({player}: {player: Player}) {
+  const minutes_elapsed = player.last_activity == undefined ? 0 : Math.floor((Date.now() / 1000 - player.last_activity) / 60);
+  const last_activity = player.last_activity == undefined ? "N/A" : `${Math.floor(minutes_elapsed / 60)}:${minutes_elapsed % 60}`;
   return (
     <>
-      <div className="bg-light-green h-[24px] font-bold px-2 col-span-5"><a className="text-red-700 hover:underline" href="https://archipelago.gg/generic_tracker/gAubCVEOSoqzYTNMghvbRg/0/1">1</a></div>
-      <div className="bg-light-green h-[24px] px-2 col-span-20">Ace</div>
-      <div className="bg-light-green h-[24px] px-2 col-span-25">Ocarina of Time</div>
-      <div className="bg-light-green h-[24px] px-2 col-span-18">Goal Completed</div>
-      <div className="bg-light-green h-[24px] text-center col-span-12">889/889</div>
-      <div className="bg-light-green h-[24px] text-center col-span-8">100.00</div>
-      <div className="bg-light-green h-[24px] text-center col-span-12">10478:32</div>
+      <div className="bg-light-green h-[24px] font-bold px-2 col-span-5"><a className="text-red-700 hover:underline" href="">{player.slot}</a></div>
+      <div className="bg-light-green h-[24px] px-2 col-span-20">{player.name}</div>
+      <div className="bg-light-green h-[24px] px-2 col-span-25">{player.game || "unknown"}</div>
+      <div className="bg-light-green h-[24px] px-2 col-span-18">{player.game_state}</div>
+      <div className="bg-light-green h-[24px] text-center col-span-12">{player.checks?.length || 0}/?</div>
+      <div className="bg-light-green h-[24px] text-center col-span-8">{"N/A"}</div>
+      <div className="bg-light-green h-[24px] text-center col-span-12">{last_activity}</div>
     </>
   )
 }
 
-function Total(){
+function TotalRow(){
   return (
     <>
       <p className="bg-light-green h-[24px] px-2 col-span-25 text-right">Total</p>
@@ -42,22 +46,22 @@ function Total(){
   )
 }
 
-export default function Players() {
-  const numberPlayer = 7;
+export default function Players({client}: {client: ArchipelagoApiClient}) {
+  const numberPlayer = client.players?.length || 0;
   const numberRow = numberPlayer + 3; // count the headers as two
   const gapNumber = numberPlayer + 1;
   const div_style = {maxHeight: `${numberRow * ROW_SIZE + gapNumber * GAP_SIZE}px`};
+
+  let players = []
+  for (const player of client.players || []){
+    players.push(<PlayerRow player={player} key={(player.team, player.slot)} />)
+  }
+
   return (
     <div style={div_style} className={"bg-light-brown h-min resize-y overflow-scroll grid grid-cols-100 gap-[2px]"}>
-      <GridHeaders />
-      <Player />
-      <Player />
-      <Player />
-      <Player />
-      <Player />
-      <Player />
-      <Player />
-      <Total />
+      <GridHeadersRow />
+      {players}
+      <TotalRow />
     </div>
   )
 }
