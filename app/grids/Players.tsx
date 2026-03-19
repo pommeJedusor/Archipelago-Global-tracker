@@ -73,7 +73,7 @@ export default function Players({client}: {client: ArchipelagoApiClient}) {
   }
 
   return (
-    <div style={div_style} className={"bg-light-brown h-min resize-y overflow-scroll grid grid-cols-100 gap-[2px]"}>
+    <div style={div_style} className={"bg-light-brown h-min resize-y overflow-auto grid grid-cols-100 gap-[2px]"}>
       <GridHeadersRow />
       {players}
       <TotalRow client={client} />

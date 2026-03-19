@@ -14,7 +14,7 @@ export default function Home() {
   }, [])
 
   return (
-    <div className="bg-dark-brown h-screen">
+    <div className="bg-dark-brown text-black h-screen">
       <Players client={client[0]}/>
     </div>
   );
