@@ -37,7 +37,7 @@ function PlayerRow({player}: {player: Player}) {
 
 function TotalRow({client}: {client: ArchipelagoApiClient}){
   const number_of_players = client.players?.length
-  const number_of_goal_completed = client.players?.filter((player)=>{player.game_state == "Goal Completed"}).length
+  const number_of_goal_completed = client.players?.filter((player)=>player.game_state == "Goal Completed").length
   const number_of_checks = client.players?.map((player)=>player.checks?.length || 0).reduce((x, y)=>x + y, 0)
   const number_of_locations = client.players?.map((player)=>player.location_number).reduce((x, y)=>x + y, 0)
   const percentage_check = client.players == undefined ? "N/A" : (number_of_checks as number / (number_of_locations as number) * 100).toFixed(2)
