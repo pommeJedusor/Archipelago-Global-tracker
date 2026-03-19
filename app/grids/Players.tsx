@@ -3,6 +3,11 @@ import { ArchipelagoApiClient, Player } from "@/ArchipelagoApiClient/Archipelago
 const ROW_SIZE = 24; // px
 const GAP_SIZE = 2; // px
 
+function number_to_two_digit_number(x: number){
+  const x_string = x.toString();
+  return "0".repeat(2 - x_string.length) + x_string
+}
+
 function GridHeadersRow() {
   return (
     <>
@@ -19,7 +24,7 @@ function GridHeadersRow() {
 
 function PlayerRow({player}: {player: Player}) {
   const minutes_elapsed = player.last_activity == undefined ? 0 : Math.floor((Date.now() / 1000 - player.last_activity) / 60);
-  const last_activity = player.last_activity == undefined ? "N/A" : `${Math.floor(minutes_elapsed / 60)}:${minutes_elapsed % 60}`;
+  const last_activity = player.last_activity == undefined ? "N/A" : `${Math.floor(minutes_elapsed / 60)}:${number_to_two_digit_number(minutes_elapsed % 60)}`;
   const percentage_check = ((player.checks?.length || 0) / player.location_number * 100).toFixed(2)
 
   return (
@@ -42,7 +47,7 @@ function TotalRow({client}: {client: ArchipelagoApiClient}){
   const number_of_locations = client.players?.map((player)=>player.location_number).reduce((x, y)=>x + y, 0)
   const percentage_check = client.players == undefined ? "N/A" : (number_of_checks as number / (number_of_locations as number) * 100).toFixed(2)
   const minutes_elapseds = client.players?.filter((player)=>player.last_activity != undefined).map((player)=>Math.floor((Date.now() / 1000 - (player.last_activity as number)) / 60))
-  const last_activity = minutes_elapseds == undefined ? "N/A" : `${Math.floor(Math.min(...minutes_elapseds) / 60)}:${Math.min(...minutes_elapseds) % 60}`;
+  const last_activity = minutes_elapseds == undefined ? "N/A" : `${Math.floor(Math.min(...minutes_elapseds) / 60)}:${number_to_two_digit_number(Math.min(...minutes_elapseds) % 60)}`;
 
   return (
     <>
