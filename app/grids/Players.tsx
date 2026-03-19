@@ -51,12 +51,12 @@ function TotalRow({client}: {client: ArchipelagoApiClient}){
 
   return (
     <>
-      <p className="bg-light-green h-[24px] px-2 col-span-25 text-right">Total</p>
-      <p className="bg-light-green h-[24px] px-2 col-span-25">All Games</p>
-      <p className="bg-light-green h-[24px] px-2 col-span-18">{client.players == undefined ? "N/A" : `${number_of_goal_completed}/${number_of_players} Complete`}</p>
-      <p className="bg-light-green h-[24px] text-center col-span-12">{number_of_checks}/{number_of_locations}</p>
-      <p className="bg-light-green h-[24px] text-center col-span-8">{percentage_check}</p>
-      <p className="bg-light-green h-[24px] text-center col-span-12">{last_activity}</p>
+      <p className="bg-light-green h-[24px] font-bold px-2 col-span-25 text-right">Total</p>
+      <p className="bg-light-green h-[24px] font-bold px-2 col-span-25">All Games</p>
+      <p className="bg-light-green h-[24px] font-bold px-2 col-span-18">{client.players == undefined ? "N/A" : `${number_of_goal_completed}/${number_of_players} Complete`}</p>
+      <p className="bg-light-green h-[24px] font-bold text-center col-span-12">{number_of_checks}/{number_of_locations}</p>
+      <p className="bg-light-green h-[24px] font-bold text-center col-span-8">{percentage_check}</p>
+      <p className="bg-light-green h-[24px] font-bold text-center col-span-12">{last_activity}</p>
     </>
   )
 }
