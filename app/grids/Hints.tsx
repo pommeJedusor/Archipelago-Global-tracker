@@ -23,7 +23,7 @@ function GridHeadersRow({client, hints, setHints}: {client: ArchipelagoApiClient
   
 
   return (
-    <div className="grid grid-cols-100 gap-[2px] sticky top-0">
+    <div className="grid grid-cols-100 gap-[2px] sticky top-0 select-none">
       <div onClick={()=>sortRows((hint)=>client.players[hint.finding_player - 1].name)} className="hover:cursor-pointer bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-9"><p>Finder</p></div>
       <div onClick={()=>sortRows((hint)=>client.players[hint.receiving_player - 1].name)} className="hover:cursor-pointer bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-9"><p>Receiver</p></div>
       <div onClick={()=>sortRows((hint)=>Object.entries(client.datapackages[client.players[hint.receiving_player - 1].game].item_name_to_id).filter((item)=>item[1] == hint.item)[0][0])} className="hover:cursor-pointer bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-16"><p>Item</p></div>
