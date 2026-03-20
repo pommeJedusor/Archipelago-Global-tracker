@@ -52,7 +52,7 @@ export default function Hints({client}: {client: ArchipelagoApiClient}) {
   }
 
   return (
-    <div style={div_style} className={"bg-light-brown h-min resize-y overflow-auto grid grid-cols-100 gap-[2px]"}>
+    <div style={div_style} className={"bg-light-brown h-min resize-y overflow-auto grid grid-cols-100 gap-[2px] mx-2 mb-4"}>
       <GridHeadersRow />
       {hint_rows}
     </div>
