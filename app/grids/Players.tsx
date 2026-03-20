@@ -29,13 +29,13 @@ function PlayerRow({player}: {player: Player}) {
 
   return (
     <div className="grid grid-cols-100 gap-[2px]">
-      <div className="bg-light-green h-[24px] font-bold px-2 col-span-5"><a className="text-red-700 hover:underline" href="">{player.slot}</a></div>
-      <div className="bg-light-green h-[24px] px-2 col-span-20">{player.name}</div>
-      <div className="bg-light-green h-[24px] px-2 col-span-25">{player.game || "unknown"}</div>
-      <div className="bg-light-green h-[24px] px-2 col-span-18">{player.game_state}</div>
-      <div className="bg-light-green h-[24px] text-center col-span-12">{player.checks?.length || 0}/{player.location_number}</div>
-      <div className="bg-light-green h-[24px] text-center col-span-8">{percentage_check}</div>
-      <div className="bg-light-green h-[24px] text-center col-span-12">{last_activity}</div>
+      <div className="bg-light-green min-h-fit h-full font-bold px-2 col-span-5"><a className="text-red-700 hover:underline" href="">{player.slot}</a></div>
+      <div className="bg-light-green min-h-fit h-full px-2 col-span-20">{player.name}</div>
+      <div className="bg-light-green min-h-fit h-full px-2 col-span-25">{player.game || "unknown"}</div>
+      <div className="bg-light-green min-h-fit h-full px-2 col-span-18">{player.game_state}</div>
+      <div className="bg-light-green min-h-fit h-full text-center col-span-12">{player.checks?.length || 0}/{player.location_number}</div>
+      <div className="bg-light-green min-h-fit h-full text-center col-span-8">{percentage_check}</div>
+      <div className="bg-light-green min-h-fit h-full text-center col-span-12">{last_activity}</div>
     </div>
   )
 }
@@ -51,12 +51,12 @@ function TotalRow({client}: {client: ArchipelagoApiClient}){
 
   return (
     <div className="grid grid-cols-100 gap-[2px]">
-      <p className="bg-light-green h-[24px] font-bold px-2 col-span-25 text-right">Total</p>
-      <p className="bg-light-green h-[24px] font-bold px-2 col-span-25">All Games</p>
-      <p className="bg-light-green h-[24px] font-bold px-2 col-span-18">{client.players == undefined ? "N/A" : `${number_of_goal_completed}/${number_of_players} Complete`}</p>
-      <p className="bg-light-green h-[24px] font-bold text-center col-span-12">{number_of_checks}/{number_of_locations}</p>
-      <p className="bg-light-green h-[24px] font-bold text-center col-span-8">{percentage_check}</p>
-      <p className="bg-light-green h-[24px] font-bold text-center col-span-12">{last_activity}</p>
+      <p className="bg-light-green min-h-fit h-full font-bold px-2 col-span-25 text-right">Total</p>
+      <p className="bg-light-green min-h-fit h-full font-bold px-2 col-span-25">All Games</p>
+      <p className="bg-light-green min-h-fit h-full font-bold px-2 col-span-18">{client.players == undefined ? "N/A" : `${number_of_goal_completed}/${number_of_players} Complete`}</p>
+      <p className="bg-light-green min-h-fit h-full font-bold text-center col-span-12">{number_of_checks}/{number_of_locations}</p>
+      <p className="bg-light-green min-h-fit h-full font-bold text-center col-span-8">{percentage_check}</p>
+      <p className="bg-light-green min-h-fit h-full font-bold text-center col-span-12">{last_activity}</p>
     </div>
   )
 }
@@ -73,7 +73,7 @@ export default function Players({client}: {client: ArchipelagoApiClient}) {
   const div_style = {maxHeight: `min(${numberRow * ROW_SIZE + gapNumber * GAP_SIZE}px, 45vh)`};
 
   return (
-    <div style={div_style} className={"bg-light-brown h-min resize-y overflow-auto overflow-x-hidden grid gap-[2px] mx-2 mb-4"}>
+    <div style={div_style} className={"bg-light-brown h-min resize-y overflow-auto overflow-x-hidden flex flex-col gap-[2px] mx-2 mb-4"}>
       <GridHeadersRow />
       {players}
       <TotalRow client={client} />

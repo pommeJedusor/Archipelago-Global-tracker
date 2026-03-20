@@ -6,13 +6,13 @@ const GAP_SIZE = 2; // px
 function GridHeadersRow() {
   return (
     <div className="grid grid-cols-100 gap-[2px] sticky top-0">
-      <div className="bg-light-brown h-[24px] font-bold flex flex-col justify-center px-2 col-span-9"><p>Finder</p></div>
-      <div className="bg-light-brown h-[24px] font-bold flex flex-col justify-center px-2 col-span-9"><p>Receiver</p></div>
-      <div className="bg-light-brown h-[24px] font-bold flex flex-col justify-center px-2 col-span-16"><p>Item</p></div>
-      <div className="bg-light-brown h-[24px] font-bold flex flex-col justify-center px-2 col-span-27"><p>Location</p></div>
-      <div className="bg-light-brown h-[24px] font-bold flex flex-col justify-center px-2 col-span-11"><p>Game</p></div>
-      <div className="bg-light-brown h-[24px] font-bold flex flex-col justify-center px-2 col-span-24"><p>Entrance</p></div>
-      <div className="bg-light-brown h-[24px] font-bold flex flex-col justify-center text-center col-span-4"><p>Found</p></div>
+      <div className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-9"><p>Finder</p></div>
+      <div className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-9"><p>Receiver</p></div>
+      <div className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-16"><p>Item</p></div>
+      <div className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-27"><p>Location</p></div>
+      <div className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-11"><p>Game</p></div>
+      <div className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-24"><p>Entrance</p></div>
+      <div className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center text-center col-span-4"><p>Found</p></div>
     </div>
   )
 }
@@ -31,13 +31,13 @@ function HintRow({hint, client}: {hint: Hint, client: ArchipelagoApiClient}) {
 
   return (
     <div className="grid grid-cols-100 gap-[2px]">
-      <div className="bg-light-green h-[24px] px-2 col-span-9">{client.players[hint.finding_player - 1].name}</div>
-      <div className="bg-light-green h-[24px] px-2 col-span-9">{receiving_player}</div>
-      <div className="bg-light-green h-[24px] px-2 col-span-16">{item}</div>
-      <div className="bg-light-green h-[24px] px-2 col-span-27">{location}</div>
-      <div className="bg-light-green h-[24px] px-2 col-span-11">{client.players[hint.finding_player - 1].game}</div>
-      <div className="bg-light-green h-[24px] px-2 col-span-24">{hint.entrance || "Vanilla"}</div>
-      <div className="bg-light-green h-[24px] text-center col-span-4">{hint.found ? "✔" : ""}</div>
+      <div className="bg-light-green min-h-fit h-full px-2 col-span-9">{client.players[hint.finding_player - 1].name}</div>
+      <div className="bg-light-green min-h-fit h-full px-2 col-span-9">{receiving_player}</div>
+      <div className="bg-light-green min-h-fit h-full px-2 col-span-16">{item}</div>
+      <div className="bg-light-green min-h-fit h-full px-2 col-span-27">{location}</div>
+      <div className="bg-light-green min-h-fit h-full px-2 col-span-11">{client.players[hint.finding_player - 1].game}</div>
+      <div className="bg-light-green min-h-fit h-full px-2 col-span-24">{hint.entrance || "Vanilla"}</div>
+      <div className="bg-light-green min-h-fit h-full text-center col-span-4">{hint.found ? "✔" : ""}</div>
     </div>
   )
 }
@@ -56,7 +56,7 @@ export default function Hints({client}: {client: ArchipelagoApiClient}) {
   }
 
   return (
-    <div style={div_style} className={"bg-light-brown h-min resize-y overflow-auto overflow-x-hidden grid gap-[2px] mx-2 mb-4"}>
+    <div style={div_style} className={"bg-light-brown h-min resize-y overflow-auto overflow-x-hidden flex flex-col gap-[2px] mx-2 mb-4"}>
       <GridHeadersRow />
       {hint_rows}
     </div>
