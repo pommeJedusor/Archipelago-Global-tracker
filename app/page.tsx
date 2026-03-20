@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Players from "./grids/Players";
 import { init } from "@/ArchipelagoApiClient/init";
 import { ArchipelagoApiClient } from "@/ArchipelagoApiClient/ArchipelagoApiClient";
+import Hints from "./grids/Hints";
 
 export default function Home() {
   const [client, setClient] = useState([new ArchipelagoApiClient()]);
@@ -15,7 +16,7 @@ export default function Home() {
 
   return (
     <div className="bg-dark-brown text-black h-screen">
-      <Players client={client[0]}/>
+      <Hints client={client[0]}/>
     </div>
   );
 }
