@@ -1,4 +1,7 @@
+"use client"
+
 import { ArchipelagoApiClient, Player } from "@/ArchipelagoApiClient/ArchipelagoApiClient";
+import { Dispatch, SetStateAction, useState } from "react";
 
 const ROW_SIZE = 24; // px
 const GAP_SIZE = 2; // px
@@ -8,16 +11,32 @@ function number_to_two_digit_number(x: number){
   return "0".repeat(Math.max(2 - x_string.length, 0)) + x_string
 }
 
-function GridHeadersRow() {
+function GridHeadersRow({players, setPlayers}: {players: Array<Player>, setPlayers: Dispatch<SetStateAction<Player[]>>}) {
+  function sortRows(getKey: ((a: Player) => any)){
+    const sorted_players = players.toSorted((a, b)=>compare_with_key(a, b, getKey))
+    if (JSON.stringify(sorted_players) == JSON.stringify(players)){
+      sorted_players.reverse()
+    }
+    setPlayers(sorted_players)
+  }
+
+  function compare_with_key(a: Player, b: Player, getKey: ((a: Player) => any)){
+    const value_a = getKey(a);
+    const value_b = getKey(b);
+    if (value_a < value_b)return -1
+    if (value_a > value_b)return 1
+    return 0
+  }
+
   return (
-    <div className="grid grid-cols-100 gap-[2px] sticky top-0">
-      <div className="bg-light-brown h-[48px] font-bold flex flex-col justify-center px-2 col-span-5"><p>#</p></div>
-      <div className="bg-light-brown h-[48px] font-bold flex flex-col justify-center px-2 col-span-20"><p>Name</p></div>
-      <div className="bg-light-brown h-[48px] font-bold flex flex-col justify-center px-2 col-span-25"><p>Game</p></div>
-      <div className="bg-light-brown h-[48px] font-bold flex flex-col justify-center px-2 col-span-18"><p>Status</p></div>
-      <div className="bg-light-brown h-[48px] font-bold flex flex-col justify-center text-center col-span-12"><p>Checks</p></div>
-      <div className="bg-light-brown h-[48px] font-bold flex flex-col justify-center text-center col-span-8"><p>%</p></div>
-      <div className="bg-light-brown h-[48px] font-bold flex flex-col justify-center text-center col-span-12"><p>Last Activity</p></div>
+    <div className="grid grid-cols-100 gap-[2px] sticky top-0 select-none">
+      <div onClick={()=>sortRows((player)=>player.slot)} className="hover:cursor-pointer bg-light-brown h-[48px] font-bold flex flex-col justify-center px-2 col-span-5"><p>#</p></div>
+      <div onClick={()=>sortRows((player)=>player.name)} className="hover:cursor-pointer bg-light-brown h-[48px] font-bold flex flex-col justify-center px-2 col-span-20"><p>Name</p></div>
+      <div onClick={()=>sortRows((player)=>player.game)} className="hover:cursor-pointer bg-light-brown h-[48px] font-bold flex flex-col justify-center px-2 col-span-25"><p>Game</p></div>
+      <div onClick={()=>sortRows((player)=>player.game_state)} className="hover:cursor-pointer bg-light-brown h-[48px] font-bold flex flex-col justify-center px-2 col-span-18"><p>Status</p></div>
+      <div onClick={()=>sortRows((player)=>player.checks?.length || 0)} className="hover:cursor-pointer bg-light-brown h-[48px] font-bold flex flex-col justify-center text-center col-span-12"><p>Checks</p></div>
+      <div onClick={()=>sortRows((player)=>(player.checks?.length || 0) / player.location_number)} className="hover:cursor-pointer bg-light-brown h-[48px] font-bold flex flex-col justify-center text-center col-span-8"><p>%</p></div>
+      <div onClick={()=>sortRows((player)=>-(player.last_activity || 0))} className="hover:cursor-pointer bg-light-brown h-[48px] font-bold flex flex-col justify-center text-center col-span-12"><p>Last Activity</p></div>
     </div>
   )
 }
@@ -62,9 +81,14 @@ function TotalRow({client}: {client: ArchipelagoApiClient}){
 }
 
 export default function Players({client}: {client: ArchipelagoApiClient}) {
-  let players = []
-  for (const player of client.players || []){
-    players.push(<PlayerRow player={player} key={(player.team, player.slot)} />)
+  const [players, setPlayers] = useState<Array<Player>>(client.players || []);
+  if (players.length != client.players.length){
+    setPlayers(client.players);
+  }
+
+  let player_rows = []
+  for (const player of players){
+    player_rows.push(<PlayerRow player={player} key={(player.team, player.slot)} />)
   }
 
   const numberPlayer = client.players?.length || 0;
@@ -74,8 +98,8 @@ export default function Players({client}: {client: ArchipelagoApiClient}) {
 
   return (
     <div style={div_style} className={"bg-light-brown h-min resize-y overflow-auto overflow-x-hidden flex flex-col gap-[2px] mx-2 mb-4"}>
-      <GridHeadersRow />
-      {players}
+      <GridHeadersRow players={players} setPlayers={setPlayers} />
+      {player_rows}
       <TotalRow client={client} />
     </div>
   )
