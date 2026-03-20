@@ -1,3 +1,10 @@
+export type Datapackage = {
+  item_name_to_id: {[id: string]: number},
+  location_name_to_id: {[id: string]: number},
+  game: string,
+  hash: string
+}
+
 export type Hint = {
   entrance: string,
   found: Boolean,
@@ -22,7 +29,8 @@ export type Player = {
 }
 
 export class ArchipelagoApiClient{
-  players?: Array<Player>;
+  players: Array<Player> = [];
+  datapackages: {[id: string]: Datapackage} = {};
   socket?: WebSocket;
   setClient?: any;
 }

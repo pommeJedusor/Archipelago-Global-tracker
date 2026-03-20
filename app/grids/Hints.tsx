@@ -17,16 +17,21 @@ function GridHeadersRow() {
   )
 }
 
-function HintRow({hint, players}: {hint: Hint, players: Array<Player>}) {
-  console.log(players)
-  console.log(hint.finding_player)
+function HintRow({hint, client}: {hint: Hint, client: ArchipelagoApiClient}) {
+  const receiving_player = client.players[hint.finding_player - 1].name;
+  const sending_player_game = client.players[hint.finding_player - 1].game
+  const datapackage = client.datapackages[sending_player_game];
+  if (datapackage == undefined)return;
+  const item = Object.entries(datapackage.item_name_to_id).filter((item)=>item[1] == hint.item)[0][0]
+  const location = Object.entries(datapackage.location_name_to_id).filter((location)=>location[1] == hint.location)[0][0]
+
   return (
     <>
-      <div className="bg-light-green h-[24px] px-2 col-span-9">{players[hint.finding_player - 1].name}</div>
-      <div className="bg-light-green h-[24px] px-2 col-span-9">{hint.receiving_player}</div>
-      <div className="bg-light-green h-[24px] px-2 col-span-16">{hint.item}</div>
-      <div className="bg-light-green h-[24px] px-2 col-span-27">{hint.location}</div>
-      <div className="bg-light-green h-[24px] px-2 col-span-11">{players[hint.finding_player - 1].game}</div>
+      <div className="bg-light-green h-[24px] px-2 col-span-9">{client.players[hint.finding_player - 1].name}</div>
+      <div className="bg-light-green h-[24px] px-2 col-span-9">{receiving_player}</div>
+      <div className="bg-light-green h-[24px] px-2 col-span-16">{item}</div>
+      <div className="bg-light-green h-[24px] px-2 col-span-27">{location}</div>
+      <div className="bg-light-green h-[24px] px-2 col-span-11">{client.players[hint.finding_player - 1].game}</div>
       <div className="bg-light-green h-[24px] px-2 col-span-24">{hint.entrance || "Vanilla"}</div>
       <div className="bg-light-green h-[24px] text-center col-span-4">{hint.found ? "✔" : ""}</div>
     </>
@@ -43,7 +48,7 @@ export default function Hints({client}: {client: ArchipelagoApiClient}) {
 
   let hint_rows = []
   for (const hint of hints){
-    hint_rows.push(<HintRow hint={hint} players={players} key={(hint.location, hint.finding_player)} />)
+    hint_rows.push(<HintRow hint={hint} client={client} key={(hint.location, hint.finding_player)} />)
   }
 
   return (
