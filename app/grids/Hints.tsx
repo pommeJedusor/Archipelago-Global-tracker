@@ -47,7 +47,7 @@ export default function Hints({client}: {client: ArchipelagoApiClient}) {
   const numberHint = hints.length || 0;
   const numberRow = numberHint + 1;
   const gapNumber = numberHint;
-  const div_style = {maxHeight: `min(${numberRow * ROW_SIZE + gapNumber * GAP_SIZE}px, 45vh)`};
+  const div_style = {maxHeight: `${numberRow * ROW_SIZE + gapNumber * GAP_SIZE}px`};
 
   let hint_rows = []
   for (let i=0;i<hints.length;i++){
@@ -56,7 +56,7 @@ export default function Hints({client}: {client: ArchipelagoApiClient}) {
   }
 
   return (
-    <div style={div_style} className={"bg-light-brown h-min resize-y overflow-auto overflow-x-hidden flex flex-col gap-[2px] mx-2 mb-4"}>
+    <div style={div_style} className={"bg-light-brown h-[45vh] resize-y overflow-auto overflow-x-hidden flex flex-col gap-[2px] mx-2"}>
       <GridHeadersRow />
       {hint_rows}
     </div>
