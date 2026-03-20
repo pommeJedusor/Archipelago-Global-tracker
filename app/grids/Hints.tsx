@@ -18,12 +18,16 @@ function GridHeadersRow() {
 }
 
 function HintRow({hint, client}: {hint: Hint, client: ArchipelagoApiClient}) {
-  const receiving_player = client.players[hint.finding_player - 1].name;
+  const receiving_player = client.players[hint.receiving_player - 1].name;
   const sending_player_game = client.players[hint.finding_player - 1].game
-  const datapackage = client.datapackages[sending_player_game];
-  if (datapackage == undefined)return;
-  const item = Object.entries(datapackage.item_name_to_id).filter((item)=>item[1] == hint.item)[0][0]
-  const location = Object.entries(datapackage.location_name_to_id).filter((location)=>location[1] == hint.location)[0][0]
+  const receiving_player_game = client.players[hint.receiving_player - 1].game
+  const sender_datapackage = client.datapackages[sending_player_game];
+  const receiver_datapackage = client.datapackages[receiving_player_game];
+  if (sender_datapackage == undefined || receiver_datapackage == undefined)return;
+  console.log(hint.item)
+  console.log(Object.entries(receiver_datapackage.item_name_to_id).filter((item)=>item[1] == hint.item)[0][0])
+  const item = Object.entries(receiver_datapackage.item_name_to_id).filter((item)=>item[1] == hint.item)[0][0]
+  const location = Object.entries(sender_datapackage.location_name_to_id).filter((location)=>location[1] == hint.location)[0][0]
 
   return (
     <>
@@ -40,19 +44,15 @@ function HintRow({hint, client}: {hint: Hint, client: ArchipelagoApiClient}) {
 
 export default function Hints({client}: {client: ArchipelagoApiClient}) {
   const hints = client.players?.map((player)=>player.hints || []).flat(1) || []
-  const numberHint = hints.length || 0;
-  const numberRow = numberHint + 1;
-  const gapNumber = numberHint;
-  const div_style = {maxHeight: `${numberRow * ROW_SIZE + gapNumber * GAP_SIZE}px`};
-  const players = client.players as Array<Player>
 
   let hint_rows = []
-  for (const hint of hints){
-    hint_rows.push(<HintRow hint={hint} client={client} key={(hint.location, hint.finding_player)} />)
+  for (let i=0;i<hints.length;i++){
+    const hint = hints[i]
+    hint_rows.push(<HintRow hint={hint} client={client} key={i} />)
   }
 
   return (
-    <div style={div_style} className={"bg-light-brown h-min resize-y overflow-auto grid grid-cols-100 gap-[2px] mx-2 mb-4"}>
+    <div className={"bg-light-brown h-min max-h-[45vh] resize-y overflow-auto grid grid-cols-100 gap-[2px] mx-2 mb-4"}>
       <GridHeadersRow />
       {hint_rows}
     </div>

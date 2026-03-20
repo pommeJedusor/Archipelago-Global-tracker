@@ -62,18 +62,13 @@ function TotalRow({client}: {client: ArchipelagoApiClient}){
 }
 
 export default function Players({client}: {client: ArchipelagoApiClient}) {
-  const numberPlayer = client.players?.length || 0;
-  const numberRow = numberPlayer + 3; // count the headers as two
-  const gapNumber = numberPlayer + 1;
-  const div_style = {maxHeight: `${numberRow * ROW_SIZE + gapNumber * GAP_SIZE}px`};
-
   let players = []
   for (const player of client.players || []){
     players.push(<PlayerRow player={player} key={(player.team, player.slot)} />)
   }
 
   return (
-    <div style={div_style} className={"bg-light-brown h-min resize-y overflow-auto grid grid-cols-100 gap-[2px] mx-2 mb-4"}>
+    <div className={"bg-light-brown h-min max-h-[45vh] resize-y overflow-auto grid grid-cols-100 gap-[2px] mx-2 mb-4"}>
       <GridHeadersRow />
       {players}
       <TotalRow client={client} />
