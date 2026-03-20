@@ -68,7 +68,7 @@ export default function Players({client}: {client: ArchipelagoApiClient}) {
   }
 
   return (
-    <div className={"bg-light-brown h-min max-h-[45vh] resize-y overflow-auto grid grid-cols-100 gap-[2px] mx-2 mb-4"}>
+    <div className={"bg-light-brown h-min max-h-[45vh] resize-y overflow-auto overflow-x-hidden grid grid-cols-100 gap-[2px] mx-2 mb-4"}>
       <GridHeadersRow />
       {players}
       <TotalRow client={client} />
