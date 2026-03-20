@@ -43,7 +43,7 @@ function HintRow({hint, client}: {hint: Hint, client: ArchipelagoApiClient}) {
 }
 
 export default function Hints({client}: {client: ArchipelagoApiClient}) {
-  const hints = client.players?.map((player)=>player.hints || []).flat(1) || []
+  const hints = [...new Set(client.players?.map((player)=>player.hints || []).flat(1).map((hint)=>JSON.stringify(hint)) || [])].map((hint)=>JSON.parse(hint))
   const numberHint = hints.length || 0;
   const numberRow = numberHint + 1;
   const gapNumber = numberHint;
