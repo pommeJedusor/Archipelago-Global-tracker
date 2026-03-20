@@ -1,18 +1,36 @@
 import { ArchipelagoApiClient, Hint } from "@/ArchipelagoApiClient/ArchipelagoApiClient";
+import { Dispatch, SetStateAction, useState } from "react";
 
 const ROW_SIZE = 24; // px
 const GAP_SIZE = 2; // px
 
-function GridHeadersRow() {
+function GridHeadersRow({client, hints, setHints}: {client: ArchipelagoApiClient, hints: Array<Hint>, setHints: Dispatch<SetStateAction<Hint[]>>}) {
+  function sortRows(getKey: ((a: Hint) => any)){
+    const sorted_hints = hints.toSorted((a, b)=>compare_with_key(a, b, getKey))
+    if (JSON.stringify(sorted_hints) == JSON.stringify(hints)){
+      sorted_hints.reverse()
+    }
+    setHints(sorted_hints)
+  }
+
+  function compare_with_key(a: Hint, b: Hint, getKey: ((a: Hint) => any)){
+    const value_a = getKey(a);
+    const value_b = getKey(b);
+    if (value_a < value_b)return -1
+    if (value_a > value_b)return 1
+    return 0
+  }
+  
+
   return (
     <div className="grid grid-cols-100 gap-[2px] sticky top-0">
-      <div className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-9"><p>Finder</p></div>
-      <div className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-9"><p>Receiver</p></div>
-      <div className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-16"><p>Item</p></div>
-      <div className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-27"><p>Location</p></div>
-      <div className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-11"><p>Game</p></div>
-      <div className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-24"><p>Entrance</p></div>
-      <div className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center text-center col-span-4"><p>Found</p></div>
+      <div onClick={()=>sortRows((hint)=>client.players[hint.finding_player - 1].name)} className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-9"><p>Finder</p></div>
+      <div onClick={()=>sortRows((hint)=>client.players[hint.receiving_player - 1].name)} className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-9"><p>Receiver</p></div>
+      <div onClick={()=>sortRows((hint)=>Object.entries(client.datapackages[client.players[hint.receiving_player - 1].game].item_name_to_id).filter((item)=>item[1] == hint.item)[0][0])} className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-16"><p>Item</p></div>
+      <div onClick={()=>sortRows((hint)=>Object.entries(client.datapackages[client.players[hint.finding_player - 1].game].location_name_to_id).filter((location)=>location[1] == hint.location)[0][0])} className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-27"><p>Location</p></div>
+      <div onClick={()=>sortRows((hint)=>client.players[hint.finding_player - 1].game)} className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-11"><p>Game</p></div>
+      <div onClick={()=>sortRows((hint)=>hint.entrance || "Vanilla")} className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-24"><p>Entrance</p></div>
+      <div onClick={()=>sortRows((hint)=>hint.found)} className="bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center text-center col-span-4"><p>Found</p></div>
     </div>
   )
 }
@@ -24,8 +42,6 @@ function HintRow({hint, client}: {hint: Hint, client: ArchipelagoApiClient}) {
   const sender_datapackage = client.datapackages[sending_player_game];
   const receiver_datapackage = client.datapackages[receiving_player_game];
   if (sender_datapackage == undefined || receiver_datapackage == undefined)return;
-  console.log(hint.item)
-  console.log(Object.entries(receiver_datapackage.item_name_to_id).filter((item)=>item[1] == hint.item)[0][0])
   const item = Object.entries(receiver_datapackage.item_name_to_id).filter((item)=>item[1] == hint.item)[0][0]
   const location = Object.entries(sender_datapackage.location_name_to_id).filter((location)=>location[1] == hint.location)[0][0]
 
@@ -43,11 +59,16 @@ function HintRow({hint, client}: {hint: Hint, client: ArchipelagoApiClient}) {
 }
 
 export default function Hints({client}: {client: ArchipelagoApiClient}) {
-  const hints = [...new Set(client.players?.map((player)=>player.hints || []).flat(1).map((hint)=>JSON.stringify(hint)) || [])].map((hint)=>JSON.parse(hint))
+  const expected_hints = [...new Set(client.players?.map((player)=>player.hints || []).flat(1).map((hint)=>JSON.stringify(hint)) || [])].map((hint)=>JSON.parse(hint));
+  const [hints, setHints] = useState<Array<Hint>>(expected_hints);
+  if (hints.length != expected_hints.length){
+    setHints(expected_hints);
+  }
   const numberHint = hints.length || 0;
   const numberRow = numberHint + 1;
   const gapNumber = numberHint;
   const div_style = {maxHeight: `${numberRow * ROW_SIZE + gapNumber * GAP_SIZE}px`};
+
 
   let hint_rows = []
   for (let i=0;i<hints.length;i++){
@@ -57,7 +78,7 @@ export default function Hints({client}: {client: ArchipelagoApiClient}) {
 
   return (
     <div style={div_style} className={"bg-light-brown h-[45vh] resize-y overflow-auto overflow-x-hidden flex flex-col gap-[2px] mx-2"}>
-      <GridHeadersRow />
+      <GridHeadersRow hints={hints} setHints={setHints} client={client} />
       {hint_rows}
     </div>
   )
