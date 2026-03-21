@@ -25,7 +25,7 @@ export function init(client: ArchipelagoApiClient){
         client.socket?.send(`${game}`)
       }else {
         const datapackage = JSON.parse(localStorage.getItem(`${game}`) as string);
-        client.datapackages[datapackage.game] = datapackage;
+        client.load_datapackage(datapackage);
         client.setClient([client])
       }
     }
@@ -34,7 +34,7 @@ export function init(client: ArchipelagoApiClient){
       console.log(JSON.parse(message_content))
       const datapackage = JSON.parse(message_content)
       localStorage.setItem(`${datapackage.game}`, message_content)
-      client.datapackages[datapackage.game] = datapackage;
+      client.load_datapackage(datapackage);
       client.setClient([client])
     }
   });
