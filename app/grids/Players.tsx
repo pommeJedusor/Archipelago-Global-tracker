@@ -31,8 +31,8 @@ function GridHeadersRow({players, setPlayers}: {players: Array<Player>, setPlaye
   return (
     <div className="grid grid-cols-100 gap-[2px] sticky top-0 select-none">
       <div onClick={()=>sortRows((player)=>player.slot)} className="hover:cursor-pointer bg-light-brown h-[48px] font-bold flex flex-col justify-center px-2 col-span-5"><p>#</p></div>
-      <div onClick={()=>sortRows((player)=>player.name)} className="hover:cursor-pointer bg-light-brown h-[48px] font-bold flex flex-col justify-center px-2 col-span-20"><p>Name</p></div>
-      <div onClick={()=>sortRows((player)=>player.game)} className="hover:cursor-pointer bg-light-brown h-[48px] font-bold flex flex-col justify-center px-2 col-span-25"><p>Game</p></div>
+      <div onClick={()=>sortRows((player)=>player.name.toUpperCase())} className="hover:cursor-pointer bg-light-brown h-[48px] font-bold flex flex-col justify-center px-2 col-span-20"><p>Name</p></div>
+      <div onClick={()=>sortRows((player)=>player.game.toUpperCase())} className="hover:cursor-pointer bg-light-brown h-[48px] font-bold flex flex-col justify-center px-2 col-span-25"><p>Game</p></div>
       <div onClick={()=>sortRows((player)=>player.game_state)} className="hover:cursor-pointer bg-light-brown h-[48px] font-bold flex flex-col justify-center px-2 col-span-18"><p>Status</p></div>
       <div onClick={()=>sortRows((player)=>player.checks?.length || 0)} className="hover:cursor-pointer bg-light-brown h-[48px] font-bold flex flex-col justify-center text-center col-span-12"><p>Checks</p></div>
       <div onClick={()=>sortRows((player)=>(player.checks?.length || 0) / player.location_number)} className="hover:cursor-pointer bg-light-brown h-[48px] font-bold flex flex-col justify-center text-center col-span-8"><p>%</p></div>

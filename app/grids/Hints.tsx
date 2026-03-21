@@ -24,12 +24,12 @@ function GridHeadersRow({client, hints, setHints}: {client: ArchipelagoApiClient
 
   return (
     <div className="grid grid-cols-100 gap-[2px] sticky top-0 select-none">
-      <div onClick={()=>sortRows((hint)=>client.players[hint.finding_player - 1].name)} className="hover:cursor-pointer bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-9"><p>Finder</p></div>
-      <div onClick={()=>sortRows((hint)=>client.players[hint.receiving_player - 1].name)} className="hover:cursor-pointer bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-9"><p>Receiver</p></div>
-      <div onClick={()=>sortRows((hint)=>Object.entries(client.datapackages[client.players[hint.receiving_player - 1].game].item_name_to_id).filter((item)=>item[1] == hint.item)[0][0])} className="hover:cursor-pointer bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-16"><p>Item</p></div>
-      <div onClick={()=>sortRows((hint)=>Object.entries(client.datapackages[client.players[hint.finding_player - 1].game].location_name_to_id).filter((location)=>location[1] == hint.location)[0][0])} className="hover:cursor-pointer bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-27"><p>Location</p></div>
-      <div onClick={()=>sortRows((hint)=>client.players[hint.finding_player - 1].game)} className="hover:cursor-pointer bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-11"><p>Game</p></div>
-      <div onClick={()=>sortRows((hint)=>hint.entrance || "Vanilla")} className="hover:cursor-pointer bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-24"><p>Entrance</p></div>
+      <div onClick={()=>sortRows((hint)=>client.players[hint.finding_player - 1].name.toUpperCase())} className="hover:cursor-pointer bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-9"><p>Finder</p></div>
+      <div onClick={()=>sortRows((hint)=>client.players[hint.receiving_player - 1].name.toUpperCase())} className="hover:cursor-pointer bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-9"><p>Receiver</p></div>
+      <div onClick={()=>sortRows((hint)=>Object.entries(client.datapackages[client.players[hint.receiving_player - 1].game].item_name_to_id).filter((item)=>item[1] == hint.item)[0][0].toUpperCase())} className="hover:cursor-pointer bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-16"><p>Item</p></div>
+      <div onClick={()=>sortRows((hint)=>Object.entries(client.datapackages[client.players[hint.finding_player - 1].game].location_name_to_id).filter((location)=>location[1] == hint.location)[0][0].toUpperCase())} className="hover:cursor-pointer bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-27"><p>Location</p></div>
+      <div onClick={()=>sortRows((hint)=>client.players[hint.finding_player - 1].game.toUpperCase())} className="hover:cursor-pointer bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-11"><p>Game</p></div>
+      <div onClick={()=>sortRows((hint)=>hint.entrance.toUpperCase() || "Vanilla".toUpperCase())} className="hover:cursor-pointer bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center px-2 col-span-24"><p>Entrance</p></div>
       <div onClick={()=>sortRows((hint)=>hint.found)} className="hover:cursor-pointer bg-light-brown min-h-fit h-full font-bold flex flex-col justify-center text-center col-span-4"><p>Found</p></div>
     </div>
   )
