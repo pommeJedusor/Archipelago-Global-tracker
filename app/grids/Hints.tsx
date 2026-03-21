@@ -4,6 +4,20 @@ import { Dispatch, SetStateAction, useState } from "react";
 const ROW_SIZE = 24; // px
 const GAP_SIZE = 2; // px
 
+export function get_player_href_from_index(index: number){
+  const origin = window.location.origin;
+  const pathname = "/player"
+  let search = window.location.search;
+  if (/player\=\d+/.test(search)){
+    search = search.replace(/player\=\d+/, `player=${index}`)
+  }else if (search[0] == "?") {
+    search += `&player=${index}`
+  }else {
+    search = `?player=${index}`
+  }
+  return `${origin}${pathname}${search}`
+}
+
 function GridHeadersRow({client, hints, setHints}: {client: ArchipelagoApiClient, hints: Array<Hint>, setHints: Dispatch<SetStateAction<Hint[]>>}) {
   function sortRows(getKey: ((a: Hint) => any)){
     const sorted_hints = hints.toSorted((a, b)=>compare_with_key(a, b, getKey))
@@ -35,7 +49,7 @@ function GridHeadersRow({client, hints, setHints}: {client: ArchipelagoApiClient
   )
 }
 
-function HintRow({hint, client}: {hint: Hint, client: ArchipelagoApiClient}) {
+function HintRow({hint, client, player}: {hint: Hint, client: ArchipelagoApiClient, player?: number}) {
   const receiving_player = client.players[hint.receiving_player - 1].name;
   const sending_player_game = client.players[hint.finding_player - 1].game
   const receiving_player_game = client.players[hint.receiving_player - 1].game
@@ -47,8 +61,22 @@ function HintRow({hint, client}: {hint: Hint, client: ArchipelagoApiClient}) {
 
   return (
     <div className="grid grid-cols-100 gap-[2px]">
-      <div className="bg-light-green min-h-fit h-full px-2 col-span-9">{client.players[hint.finding_player - 1].name}</div>
-      <div className="bg-light-green min-h-fit h-full px-2 col-span-9">{receiving_player}</div>
+      <div className="bg-light-green min-h-fit h-full px-2 col-span-9">
+        {
+          !player || hint.finding_player == player ? 
+            <>{client.players[hint.finding_player - 1].name}</>
+          :
+            <a href={get_player_href_from_index(hint.finding_player)} className="text-red-700 font-bold hover:underline">{client.players[hint.finding_player - 1].name}</a>
+        }
+      </div>
+      <div className="bg-light-green min-h-fit h-full px-2 col-span-9">
+        {
+          !player || hint.receiving_player == player ? 
+            <>{client.players[hint.receiving_player - 1].name}</>
+          :
+            <a href={get_player_href_from_index(hint.receiving_player)} className="text-red-700 font-bold hover:underline">{client.players[hint.receiving_player - 1].name}</a>
+        }
+      </div>
       <div className="bg-light-green min-h-fit h-full px-2 col-span-16">{item}</div>
       <div className="bg-light-green min-h-fit h-full px-2 col-span-27">{location}</div>
       <div className="bg-light-green min-h-fit h-full px-2 col-span-11">{client.players[hint.finding_player - 1].game}</div>
@@ -58,8 +86,12 @@ function HintRow({hint, client}: {hint: Hint, client: ArchipelagoApiClient}) {
   )
 }
 
-export default function Hints({client}: {client: ArchipelagoApiClient}) {
-  const expected_hints = [...new Set(client.players?.map((player)=>player.hints || []).flat(1).map((hint)=>JSON.stringify(hint)) || [])].map((hint)=>JSON.parse(hint));
+export default function Hints({client, player}: {client: ArchipelagoApiClient, player?: number}) {
+  let expected_hints: Array<Hint> = [...new Set(client.players?.map((player)=>player.hints || []).flat(1).map((hint)=>JSON.stringify(hint)) || [])].map((hint)=>JSON.parse(hint));
+  if (player != undefined){
+    expected_hints = expected_hints.filter((hint)=>[hint.finding_player, hint.receiving_player].includes(player))
+  }
+
   const [hints, setHints] = useState<Array<Hint>>(expected_hints);
   if (hints.length != expected_hints.length){
     setHints(expected_hints);
@@ -73,7 +105,7 @@ export default function Hints({client}: {client: ArchipelagoApiClient}) {
   let hint_rows = []
   for (let i=0;i<hints.length;i++){
     const hint = hints[i]
-    hint_rows.push(<HintRow hint={hint} client={client} key={i} />)
+    hint_rows.push(<HintRow hint={hint} client={client} key={i} player={player} />)
   }
 
   return (

@@ -2,6 +2,7 @@
 
 import { ArchipelagoApiClient, Player } from "@/ArchipelagoApiClient/ArchipelagoApiClient";
 import { Dispatch, SetStateAction, useState } from "react";
+import { get_player_href_from_index } from "./Hints";
 
 const ROW_SIZE = 24; // px
 const GAP_SIZE = 2; // px
@@ -49,7 +50,7 @@ function PlayerRow({player_id, client}: {player_id: number, client: ArchipelagoA
 
   return (
     <div className="grid grid-cols-100 gap-[2px]">
-      <div className="bg-light-green min-h-fit h-full font-bold px-2 col-span-5"><a className="text-red-700 hover:underline" href="">{player.slot}</a></div>
+      <div className="bg-light-green min-h-fit h-full px-2 col-span-5"><a className="text-red-700 font-bold hover:underline" href={get_player_href_from_index(player.slot)}>{player.slot}</a></div>
       <div className="bg-light-green min-h-fit h-full px-2 col-span-20">{player.name}</div>
       <div className="bg-light-green min-h-fit h-full px-2 col-span-25">{player.game || "unknown"}</div>
       <div className="bg-light-green min-h-fit h-full px-2 col-span-18">{player.game_state}</div>
