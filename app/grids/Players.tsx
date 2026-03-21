@@ -11,7 +11,7 @@ function number_to_two_digit_number(x: number){
   return "0".repeat(Math.max(2 - x_string.length, 0)) + x_string
 }
 
-function GridHeadersRow({players, setPlayers}: {players: Array<Player>, setPlayers: Dispatch<SetStateAction<Player[]>>}) {
+function GridHeadersRow({client, players, setPlayers}: {client: ArchipelagoApiClient, players: Array<number>, setPlayers: Dispatch<SetStateAction<number[]>>}) {
   function sortRows(getKey: ((a: Player) => any)){
     const sorted_players = players.toSorted((a, b)=>compare_with_key(a, b, getKey))
     if (JSON.stringify(sorted_players) == JSON.stringify(players)){
@@ -20,9 +20,9 @@ function GridHeadersRow({players, setPlayers}: {players: Array<Player>, setPlaye
     setPlayers(sorted_players)
   }
 
-  function compare_with_key(a: Player, b: Player, getKey: ((a: Player) => any)){
-    const value_a = getKey(a);
-    const value_b = getKey(b);
+  function compare_with_key(a: number, b: number, getKey: ((a: Player) => any)){
+    const value_a = getKey(client.players[a]);
+    const value_b = getKey(client.players[b]);
     if (value_a < value_b)return -1
     if (value_a > value_b)return 1
     return 0
@@ -41,7 +41,8 @@ function GridHeadersRow({players, setPlayers}: {players: Array<Player>, setPlaye
   )
 }
 
-function PlayerRow({player}: {player: Player}) {
+function PlayerRow({player_id, client}: {player_id: number, client: ArchipelagoApiClient}) {
+  const player = client.players[player_id]
   const minutes_elapsed = player.last_activity == undefined ? 0 : Math.floor((Date.now() / 1000 - player.last_activity) / 60);
   const last_activity = player.last_activity == undefined ? "None" : `${Math.floor(minutes_elapsed / 60)}:${number_to_two_digit_number(minutes_elapsed % 60)}`;
   const percentage_check = ((player.checks?.length || 0) / player.location_number * 100).toFixed(2)
@@ -81,14 +82,14 @@ function TotalRow({client}: {client: ArchipelagoApiClient}){
 }
 
 export default function Players({client}: {client: ArchipelagoApiClient}) {
-  const [players, setPlayers] = useState<Array<Player>>(client.players || []);
+  const [players, setPlayers] = useState<Array<number>>(client.players.map((player)=>player.slot - 1) || []);
   if (players.length != client.players.length){
-    setPlayers(client.players);
+    setPlayers(client.players.map((player)=>player.slot - 1));
   }
 
   let player_rows = []
   for (const player of players){
-    player_rows.push(<PlayerRow player={player} key={(player.team, player.slot)} />)
+    player_rows.push(<PlayerRow player_id={player} client={client} key={(client.players[player].team, client.players[player].slot)} />)
   }
 
   const numberPlayer = client.players?.length || 0;
@@ -98,7 +99,7 @@ export default function Players({client}: {client: ArchipelagoApiClient}) {
 
   return (
     <div style={div_style} className={"bg-light-brown h-min resize-y overflow-auto overflow-x-hidden flex flex-col gap-[2px] mx-2 mb-4"}>
-      <GridHeadersRow players={players} setPlayers={setPlayers} />
+      <GridHeadersRow client={client} players={players} setPlayers={setPlayers} />
       {player_rows}
       <TotalRow client={client} />
     </div>
