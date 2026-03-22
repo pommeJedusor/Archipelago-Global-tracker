@@ -61,7 +61,8 @@ function HintRow({hint, client}: {hint: Hint, client: ArchipelagoApiClient}) {
 export default function Hints({client}: {client: ArchipelagoApiClient}) {
   const expected_hints = [...new Set(client.players?.map((player)=>player.hints || []).flat(1).map((hint)=>JSON.stringify(hint)) || [])].map((hint)=>JSON.parse(hint));
   const [hints, setHints] = useState<Array<Hint>>(expected_hints);
-  if (hints.length != expected_hints.length){
+  const is_found_hint_number_correct = hints.map((hint)=>hint.found ? 1 : 0 as number).reduce((a, b)=>a+b, 0) == expected_hints.map((hint)=>hint.found ? 1 : 0 as number).reduce((a, b)=>a+b, 0);
+  if (hints.length != expected_hints.length || !is_found_hint_number_correct){
     setHints(expected_hints);
   }
   const numberHint = hints.length || 0;
